@@ -1,0 +1,39 @@
+name: ✨ Solicitação de Recurso
+description: Sugira uma ideia para uma nova funcionalidade ou melhoria no projeto Cazia.
+title: "[FEATURE]: Proposta concisa de funcionalidade"
+labels: ["type: enhancement", "to triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A Cazia valoriza novas ideias! Por favor, utilize este template para nos ajudar a entender a sua proposta.
+  - type: textarea
+    id: problem
+    attributes:
+      label: O Problema que Queremos Resolver
+      description: Descreva o problema ou a limitação atual que a sua funcionalidade irá resolver. Por que isso é importante?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposta de Solução (A Funcionalidade)
+      description: Descreva a funcionalidade que você gostaria de ver. Seja o mais específico possível.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas Consideradas
+      description: Descreveu quaisquer soluções ou abordagens alternativas que você considerou.
+    validations:
+      required: false
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Checklist de Contribuição
+      options:
+        - label: Já verifiquei as issues existentes para ver se esta proposta foi feita.
+          required: true
+        - label: Estou disposto(a) a ajudar com a implementação se for necessário.
+          required: false
