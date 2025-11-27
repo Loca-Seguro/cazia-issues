@@ -1,0 +1,31 @@
+# .github/ISSUE_TEMPLATE/doc_feedback.yml
+name: 📚 Feedback/Erro de Documentação
+description: Reporte erros ou sugerir melhorias na documentação, no site ou em exemplos de código.
+title: "[DOCS]: Descrição clara do erro/sugestão"
+labels: ["type: documentation", "to triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por ajudar a manter nossa documentação precisa e clara!
+  - type: input
+    id: page_url
+    attributes:
+      label: URL da Página Afetada
+      description: Qual é o link para a página ou arquivo que contém o erro?
+    validations:
+      required: true
+  - type: textarea
+    id: problem_description
+    attributes:
+      label: Descrição do Erro
+      description: Descreva o que está incorreto ou o que falta na documentação.
+    validations:
+      required: true
+  - type: textarea
+    id: suggested_fix
+    attributes:
+      label: Correção Sugerida (Opcional)
+      description: Se souber como corrigir, por favor, inclua o texto corrigido ou a sugestão.
+    validations:
+      required: false
