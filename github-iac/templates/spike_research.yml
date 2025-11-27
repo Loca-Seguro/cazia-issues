@@ -1,0 +1,44 @@
+name: 🔬 Spike (Pesquisa de Engenharia)
+description: Para itens de trabalho focados em pesquisa, validação técnica ou redução de risco/incerteza.
+title: "[SPIKE]: [Tecnologia] - Objetivo da pesquisa para [Funcionalidade]."
+labels: ["type: spike"] # Rótulo inicial de categoria
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### ❓ Objetivo da Pesquisa
+        Um Spike deve sempre resultar em uma resposta acionável (ex: "Podemos fazer isso" ou "Devemos usar a Opção X").
+        ***
+
+  - type: textarea
+    id: research_goal
+    attributes:
+      label: 1. Qual é a Incerteza/Pergunta que precisa ser resolvida?
+      description: Descreva o risco técnico ou o desconhecido que este Spike abordará.
+      placeholder: Ex: Não temos certeza se a API de geolocalização do provedor Y suporta a carga que esperamos.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_output
+    attributes:
+      label: 2. Entrega Esperada e Decisão (Output)
+      description: Qual deve ser o resultado final deste Spike? (Ex: Documento de design, Prova de conceito, Decisão técnica clara).
+      placeholder: |
+        - [ ] Documento de decisão técnica em Confluence/Wiki.
+        - [ ] Prova de conceito (PoC) funcionando em uma branch separada.
+        - [ ] Estimativa de esforço (Story Points) para a história de usuário relacionada.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: related_feature
+    attributes:
+      label: 3. Qual Feature principal este Spike desbloqueia?
+      description: Se aplicável, mencione a Issue (História de Usuário) que está bloqueada por esta pesquisa.
+      options:
+        - "[STORY]: [ID] - Nome da Feature" # Preencher manualmente ou via triagem
+        - Nenhuma / Pesquisa de Infraestrutura
+    validations:
+      required: false
