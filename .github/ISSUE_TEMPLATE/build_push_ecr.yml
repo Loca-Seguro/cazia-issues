@@ -1,0 +1,70 @@
+name: Build and Push Esteira Tech CRM app to ECR
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+
+jobs:
+  build-and-push:
+    name: BuildAndPush
+    runs-on: ubuntu-latest
+    env:
+      PHP_IMAGE_NAME: ${{ secrets.ECR_REPOSITORY }}/${{ vars.PHP_IMAGE_NAME }}
+      WEB_IMAGE_NAME: ${{ secrets.ECR_REPOSITORY }}/${{ vars.WEB_IMAGE_NAME }}
+      WATCHTOWER_URL: https://wt.esteiratech.com.br/v1/update
+      TAG: live
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build PHP Image
+        id: build-php
+        run: |
+          docker build -t $PHP_IMAGE_NAME:$TAG --target php-runtime -f docker/prod/Dockerfile .
+        
+      - name: Build Web Assets Image
+        id: build-assets
+        run: |
+          docker build -t $WEB_IMAGE_NAME:$TAG --target web-runtime -f docker/prod/Dockerfile .
+
+      - name: Push images to ECR
+        id: push-images
+        run: |
+          docker push $PHP_IMAGE_NAME:$TAG
+          docker push $WEB_IMAGE_NAME:$TAG
+
+      - name: Trigger Watchtower Update with Status Check
+        run: |
+            # Trigger the update
+            response=$(curl -s -w "%{http_code}" -H "Authorization: Bearer ${{ secrets.WATCHTOWER_TOKEN }}" \
+                             -H "Content-Type: application/json" \
+                             -X POST \
+                             $WATCHTOWER_URL)
+            
+            http_code="${response: -3}"
+            
+            if [ "$http_code" -eq 200 ]; then
+                echo "Watchtower update triggered successfully"
+            else
+                echo "Failed to trigger Watchtower update. HTTP code: $http_code"
+                exit 1
+            fi
