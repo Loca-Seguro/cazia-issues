@@ -13,15 +13,17 @@ locals {
   # Definição dos repositórios e permissões (A estrutura do seu antigo locals)
   cazia_teams_config = {
     "Admins" = {
-      repos = { (github_repository.cazia_project_repo.name) = "admin",
-      (github_repository.cazia_project_repo.name) = "admin" }
+      repos = { 
+      (github_repository.cazia_project_repo.name) = "admin",
+      (github_repository.main.name) = "admin" }
     },
     "ops" = {
       repos = { (github_repository.main.name) = "maintain" }
     },
     "dev" = {
-      repos = { (github_repository.cazia_project_repo.name) = "push",
-      (github_repository.cazia_project_repo.name) = "push" }
+      repos = { 
+        (github_repository.cazia_project_repo.name) = "push",
+        (github_repository.main.name) = "push" }
     },
     "app_users" = {
       repos = {
