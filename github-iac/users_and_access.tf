@@ -15,7 +15,7 @@ locals {
       repos = { (github_repository.main.name) = "maintain" }
     },
     "dev" = {
-      repos = { (github_repository.cazia_project_repo.name) = "push" }
+      repos = { (github_repository.cazia_project_repo.name) = "push", (github_repository.cazia_project_repo.name) = "push" }
     },
     "app_users" = {
       repos = {
@@ -54,3 +54,4 @@ resource "github_team_repository" "team_repo_access" {
   repository = each.value.repository
   permission = each.value.permission
 }
+
