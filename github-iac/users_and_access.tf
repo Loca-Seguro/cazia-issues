@@ -7,19 +7,25 @@ locals {
     "ops"       = "caziaopstriage",
     "dev"       = "caziadevengenharia",
     "app_users" = "caziaappusers",
+    "Admins"    = "caziasuperadmins"
   }
-  
+
   # Definição dos repositórios e permissões (A estrutura do seu antigo locals)
   cazia_teams_config = {
+    "Admins" = {
+      repos = { (github_repository.cazia_project_repo.name) = "admin",
+      (github_repository.cazia_project_repo.name) = "admin" }
+    },
     "ops" = {
       repos = { (github_repository.main.name) = "maintain" }
     },
     "dev" = {
-      repos = { (github_repository.cazia_project_repo.name) = "push", (github_repository.cazia_project_repo.name) = "push" }
+      repos = { (github_repository.cazia_project_repo.name) = "push",
+      (github_repository.cazia_project_repo.name) = "push" }
     },
     "app_users" = {
       repos = {
-        (github_repository.main.name) = "pull", 
+        (github_repository.main.name)               = "pull",
         (github_repository.cazia_project_repo.name) = "pull"
       }
     }
@@ -29,7 +35,7 @@ locals {
 # BUSCA TIMES EXISTENTES: Consulta os times criados manualmente via SLUG
 data "github_team" "cazia_teams_data" {
   for_each = local.team_slug_map
-  slug = each.value
+  slug     = each.value
 }
 
 # Substitua este bloco pelo seu original (o bloco de criação de team deve ser removido)
