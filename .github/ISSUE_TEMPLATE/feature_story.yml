@@ -1,0 +1,41 @@
+name: ✨ História de Usuário (Feature/Melhoria)
+description: Defina uma nova funcionalidade do ponto de vista do usuário final.
+title: "[STORY]: [Funcionalidade] - Como um [Usuário], eu quero [Ação], para que [Valor]."
+labels: ["type: feature"] # Rótulo inicial de categoria
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 🎯 Definição do Problema e Valor
+        Use este template para definir o que será construído e por que.
+        ***
+
+  - type: textarea
+    id: user_story
+    attributes:
+      label: 1. História de Usuário (User Story)
+      description: Use o formato: "Como um [Tipo de Usuário], eu gostaria de [Funcionalidade], para que [Valor/Benefício]."
+      placeholder: Ex: Como um corretor, eu gostaria de visualizar o status do lead no painel, para que eu possa priorizar meu acompanhamento.
+    validations:
+      required: true
+
+  - type: textarea
+    id: definition_of_done
+    attributes:
+      label: 2. Critérios de Aceitação (Definition of Done)
+      description: Liste os requisitos verificáveis. Como saberemos que a História foi concluída com sucesso?
+      placeholder: |
+        - [ ] O novo campo 'Status do Lead' é visível para o corretor.
+        - [ ] A cor do status muda de acordo com a regra de 7 dias (definida).
+        - [ ] A funcionalidade está 100% coberta por testes unitários e de integração.
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 3. Notas Técnicas e Dependências (Opcional)
+      description: Inclua qualquer observação sobre o design, mocks ou dependências de API.
+    validations:
+      required: false
