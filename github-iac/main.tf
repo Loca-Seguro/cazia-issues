@@ -295,38 +295,3 @@ resource "github_issue_label" "cazia_dev_labels" {
   color       = each.value.color
   description = each.value.desc
 }
-
-# # LOCALIZAR ESTE BLOCO NO main.tf (Linhas 209 em diante, aproximadamente)
-# resource "github_repository_security_and_analysis" "cazia_security_settings" {
-#   repository_id = github_repository.main.node_id 
-
-#   # Deixamos o Advanced Security e o Secret Scanning desabilitados,
-#   # mas este recurso garante que a página de segurança seja configurada.
-#   advanced_security {
-#     status = "disabled"
-#   }
-#   secret_scanning {
-#     status = "disabled"
-#   }
-#   secret_scanning_push_protection {
-#     status = "disabled"
-#   }
-# }
-
-
-module "cazia_frontend_repo" {
-  source = "./modules/dev_repo"
-  
-  repo_name        = "cazia-frontend-app"
-  repo_description = "Repositório da aplicação web principal do Cazia (Frontend)."
-  org_name         = var.org_name # Assumindo que var.org_name existe globalmente
-}
-
-# Exemplo de como chamar o módulo para criar um repositório de backend
-module "cazia_backend_repo" {
-  source = "./modules/dev_repo"
-  
-  repo_name        = "cazia-backend-api"
-  repo_description = "Repositório dos microsserviços e APIs do Cazia (Backend)."
-  org_name         = var.org_name
-}
