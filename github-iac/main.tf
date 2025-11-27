@@ -312,3 +312,21 @@ resource "github_issue_label" "cazia_dev_labels" {
 #     status = "disabled"
 #   }
 # }
+
+
+module "cazia_frontend_repo" {
+  source = "./modules/dev_repo"
+  
+  repo_name        = "cazia-frontend-app"
+  repo_description = "Repositório da aplicação web principal do Cazia (Frontend)."
+  org_name         = var.org_name # Assumindo que var.org_name existe globalmente
+}
+
+# Exemplo de como chamar o módulo para criar um repositório de backend
+module "cazia_backend_repo" {
+  source = "./modules/dev_repo"
+  
+  repo_name        = "cazia-backend-api"
+  repo_description = "Repositório dos microsserviços e APIs do Cazia (Backend)."
+  org_name         = var.org_name
+}
