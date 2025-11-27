@@ -1,0 +1,153 @@
+name: Slack Issue Notifications
+on:
+  issues:
+    # Dispara para abertura, atribuição, rótulo adicionado, fechamento
+    types: [opened, labeled, assigned, closed, reopened] 
+  issue_comment:
+    types: [created] # Notifica sobre novos comentários
+
+jobs:
+  # ========================================================================
+  # Job 1: Notificação de Abertura (Início do Ciclo - 'To Triage')
+  # ========================================================================
+  notify_issue_opened:
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send New Issue Notification to Slack
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: 🔔 NOVA ISSUE RECEBIDA
+          SLACK_COLOR: '#FFCC00' # Amarelo (Aguardando Triagem)
+          SLACK_USERNAME: Cazia Triagem Bot
+          SLACK_FOOTER: ''
+          SLACK_MESSAGE: |
+            *Issue:* ${{ github.event.issue.title }}
+            *Criada por:* ${{ github.event.issue.user.login }}
+            
+            <${{ github.event.issue.html_url }}|Abrir Issue para Triagem>
+            
+            ⚠️ Status: Aguardando Triagem!
+          SLACK_CHANNEL: general
+
+  # ========================================================================
+  # Job 2: Triagem Concluída (Move para Ready)
+  # ========================================================================
+  notify_issue_ready:
+    # Dispara quando o triador aplica o rótulo 'Ready'
+    if: github.event.action == 'labeled' && github.event.label.name == 'Ready'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Ready Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: 🎯 ISSUE PRONTA PARA DEV (READY)
+          SLACK_COLOR: '#36A64F' # Verde (Pronta para assumir)
+          SLACK_USERNAME: Cazia Bot
+          SLACK_FOOTER: ''
+          SLACK_MESSAGE: |
+            A Issue *${{ github.event.issue.title }}* foi validada e priorizada.
+            
+            *Próximo Passo:* Um técnico deve assumir a Issue.
+            *Prioridade Atual:* ${{ join(github.event.issue.labels.*.name, ', ') }}
+            
+            <${{ github.event.issue.html_url }}|Assumir Issue>
+          SLACK_CHANNEL: general
+          
+  # ========================================================================
+  # Job 3: Dev Assumiu (Move para In Progress)
+  # ========================================================================
+  notify_in_progress:
+    # Dispara quando o desenvolvedor aplica o rótulo 'In progress'
+    if: github.event.action == 'labeled' && github.event.label.name == 'In progress'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send In Progress Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: 🚀 TRABALHO INICIADO (IN PROGRESS)
+          SLACK_COLOR: '#0072C6' # Azul (Trabalhando)
+          SLACK_USERNAME: Cazia Bot
+          SLACK_FOOTER: ''
+          SLACK_MESSAGE: |
+            O trabalho na Issue *${{ github.event.issue.title }}* começou!
+            
+            *Técnico Atribuído:* ${{ join(github.event.issue.assignees.*.login, ', ') || 'N/A' }}
+            *Status:* Em Andamento.
+            
+            <${{ github.event.issue.html_url }}|Ver Andamento>
+          SLACK_CHANNEL: general
+
+  # ========================================================================
+  # Job 4: Notificação de Comentário (Suporte/Discussão)
+  # ========================================================================
+  notify_issue_comment:
+    if: github.event_name == 'issue_comment' && github.event.action == 'created'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Comment Notification to Slack
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: 💬 NOVO COMENTÁRIO
+          SLACK_COLOR: '#95A5A6' # Cinza Claro
+          SLACK_USERNAME: Cazia Bot
+          SLACK_FOOTER: ''
+          SLACK_MESSAGE: |
+            O usuário *${{ github.event.comment.user.login }}* comentou em uma issue:
+            *Issue:* ${{ github.event.issue.title }}
+            
+            *Comentário:* "${{ github.event.comment.body }}"
+            
+            <${{ github.event.comment.html_url }}|Ver Comentário Completo>
+          SLACK_CHANNEL: general
+
+  # ========================================================================
+  # Job 5: Notificação de Fechamento/Reabertura (Fim do Ciclo)
+  # ========================================================================
+  notify_issue_closed_reopened:
+    if: github.event_name == 'issues' && (github.event.action == 'closed' || github.event.action == 'reopened')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Closed/Reopened Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: ${{ github.event.action == 'closed' && '🔴 ISSUE FECHADA' || '🔵 ISSUE REABERTA' }}
+          SLACK_COLOR: ${{ github.event.action == 'closed' && '#A30200' || '#0072C6' }}
+          SLACK_USERNAME: Cazia Bot
+          SLACK_FOOTER: ''
+          SLACK_MESSAGE: |
+            A issue *${{ github.event.issue.title }}* foi ${{ github.event.action == 'closed' && 'fechada' || 'reaberta' }}.
+            
+            *Ação por:* ${{ github.event.sender.login }}
+            *Link:* <${{ github.event.issue.html_url }}|Ver Status>
+          SLACK_CHANNEL: general
+
+  # ========================================================================
+  # JOB 4.1: Notificação de Bloqueio/Desbloqueio Externo
+  # ========================================================================
+  notify_issue_block_status:
+    # Dispara quando a Issue recebe OU perde o rótulo 'status: blocked'
+    if: |
+      github.event_name == 'issues' && (github.event.action == 'labeled' || github.event.action == 'unlabeled') && 
+      (github.event.label.name == 'status: blocked')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Block Status Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TITLE: ${{ github.event.action == 'labeled' && '❌ ISSUE BLOQUEADA' || '🔓 ISSUE DESBLOQUEADA' }}
+          SLACK_COLOR: ${{ github.event.action == 'labeled' && '#e11d21' || '#5A9F5C' }} # Vermelho p/ Bloqueio, Verde p/ Desbloqueio
+          SLACK_USERNAME: Cazia Bot
+          SLACK_FOOTER: ''
+          SLACK_MESSAGE: |
+            A issue *${{ github.event.issue.title }}* foi ${{ github.event.action == 'labeled' && 'BLOQUEADA' || 'DESBLOQUEADA' }} por dependência externa.
+              Entre em contato com usuário/dependente externo para desbloquear esse Issue 
+            *Status:* ${{ github.event.action == 'labeled' && 'Aguardando Validação/Feedback.' || 'Retornou ao pipeline Ready.' }}
+            *Link:* <${{ github.event.issue.html_url }}|Ver Issue>
+          SLACK_CHANNEL: general
