@@ -1,0 +1,100 @@
+name: 🐛 Falha Crítica ou Bug no Sistema
+description: Reporte um erro que afeta a funcionalidade, o fluxo de trabalho ou a integridade dos dados no Cazia.
+title: "[BUG]: [Nome da Funcionalidade] - Descrição concisa da falha"
+labels: ["type: bug", "to triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ✨ **Obrigado por ajudar a garantir a estabilidade do Cazia!** ✨
+        Por favor, preencha o formulário detalhadamente para agilizar a correção.
+        
+        ---
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🥇 Prioridade e Impacto (Ajuda na Triagem)
+      description: Qual é o impacto real deste bug no fluxo de trabalho de vendas/dados?
+      options:
+        - "P0 - Crítico: O sistema está inacessível ou dados estão corrompidos/perdidos. BLOQUEIO TOTAL."
+        - "P1 - Alto: Afeta um fluxo principal (ex: Cadastro de Imóvel, Proposta) ou impede o uso por um grupo de usuários."
+        - "P2 - Médio: Falha em funcionalidade secundária (ex: Relatório específico, Filtro avançado) ou problema visual."
+        - "P3 - Baixo: Erro de texto, bug cosmético, ou problema que tem um *workaround* fácil."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem_statement
+    attributes:
+      label: 📝 Descrição e Consequência da Falha
+      description: O que aconteceu e qual o resultado disso para o corretor/imobiliária?
+      placeholder: "Ex: O botão 'Gerar Proposta' na ficha do cliente está travando o browser, impedindo o envio de documentos."
+    validations:
+      required: true
+
+  - type: textarea
+    id: data_context
+    attributes:
+      label: 🎯 Contexto dos Dados (Essencial para Reprodução)
+      description: Em qual objeto/registro o erro ocorreu? Isso é vital para o Dev Suporte.
+      placeholder: |
+        - Tipo de Objeto: [Ex: Imóvel, Cliente, Transação, Tarefa]
+        - ID/Nome do Objeto: [Ex: IMV-2024-1234, CPF do cliente, Nome da Transação]
+        - URL (se aplicável): [Copie o link da página onde ocorreu a falha]
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction_steps
+    attributes:
+      label: 🔢 Passos Exatos para Reproduzir o Bug
+      description: O Dev Suporte precisa saber exatamente o que você fez. Liste o fluxo passo a passo.
+      placeholder: |
+        1. Fazer login como 'Gerente'.
+        2. Navegar para o menu 'Imóveis' e selecionar o imóvel com ID IMV-1234.
+        3. Clicar no campo 'Valor de Venda' e digitar '500.000'.
+        4. O sistema exibe um erro '500 Internal Server Error' e o valor não é salvo.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_vs_actual
+    attributes:
+      label: 🔄 Comportamento Esperado vs. Atual
+      description: Qual era o comportamento correto do sistema (Esperado) e o que ele fez de fato (Atual)?
+      placeholder: |
+        Esperado: O sistema deveria salvar o novo valor e exibir uma mensagem de sucesso.
+        Atual: O sistema travou por 10 segundos e retornou um erro 500.
+    validations:
+      required: true
+      
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 📸 Screenshots, Vídeos ou Logs (Ajuda Visual)
+      description: Cole aqui links para capturas de tela ou gravações. Inclua logs do Console do navegador, se souber como obtê-los (pressione F12).
+    validations:
+      required: false
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: 💻 Ambiente (Browser, Versão e OS)
+      description: Onde a falha ocorreu?
+      options:
+        - Desktop (Chrome)
+        - Desktop (Firefox)
+        - Mobile/Tablet
+        - Integração (API, Portal X, Sistema de Banco)
+    validations:
+      required: true
+
+  - type: input
+    id: app_version
+    attributes:
+      label: 🏷️ Versão do Cazia
+      description: "Qual versão do Cazia você está utilizando? (ex: v3.1.2 ou beta)"
+      placeholder: "Ex: v3.1.2 ou não sei."
+    validations:
+      required: false
