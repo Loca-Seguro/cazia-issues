@@ -1,0 +1,49 @@
+name: Telegram Notifications for Issues
+on:
+  issues:
+    # Captura a abertura (Início) e o rótulo removido (Fim da Triagem)
+    types: [opened, unlabeled] 
+  issue_comment:
+    types: [created]
+
+jobs:
+  notify_issue_opened:
+    # Dispara ao abrir uma nova issue.
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send New Issue Notification
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          parse_mode: markdown
+          message: |
+            🔔 *NOVA ISSUE RECEBIDA*
+            
+            *Título:* `${{ github.event.issue.title }}`
+            *Repo:* `${{ github.repository }}`
+            
+            *Status:* ⚠️ AGUARDANDO TRIAGEM
+            [Abrir Issue](${{ github.event.issue.html_url }})
+          
+  notify_triage_complete:
+    # Dispara quando um rótulo é removido E esse rótulo era o 'to triage'.
+    if: github.event_name == 'issues' && github.event.action == 'unlabeled' && github.event.label.name == 'to triage'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Triage Complete Notification
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          parse_mode: markdown
+          message: |
+            ✅ *TRIAGEM CONCLUÍDA - PRONTA PARA DEV*
+            
+            *Issue:* `${{ github.event.issue.title }}`
+            
+            *Status:* Triagem Finalizada\.
+            *Rótulos Atuais:* ${{ join(github.event.issue.labels.*.name, ', ') }}
+            
+            [Começar Desenvolvimento](${{ github.event.issue.html_url }})
