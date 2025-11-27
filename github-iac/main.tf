@@ -24,7 +24,7 @@ data "github_organization" "current" {
 
 locals {
   # Arquivos de configuração do Terraform (*.tf) que devem ir para a pasta 'github-iac/'
-  
+
   # Definição centralizada de todos os rótulos de Scrum/Desenvolvimento
   cazia_dev_labels = {
     # Tipos de Trabalho
@@ -43,7 +43,7 @@ locals {
       color = "F7D024" # Amarelo (Fácil de identificar no board)
       desc  = "Tarefa técnica, não entregável, necessária para completar uma Story."
     }
-    
+
     "feature" = {
       name  = "type: feature"
       color = "0E8A16" # Verde
@@ -82,7 +82,7 @@ locals {
       desc  = "Item selecionado e planejado para ser concluído na Sprint atual."
     }
   }
-  
+
   iac_files = {
     for filename in fileset(path.module, "*.tf") :
     "github-iac/${filename}" => filename
@@ -99,9 +99,9 @@ locals {
     for filename in fileset("${path.module}/templates", "*.{yml,tpl}") :
     "github-iac/templates/${filename}" => "templates/${filename}"
   }
- 
+
   functional_templates = {
-    ".github/ISSUE_TEMPLATE/config.yml" : "templates/config.tpl" 
+    ".github/ISSUE_TEMPLATE/config.yml" : "templates/config.tpl"
   }
 
   # Arquivos de Template (.tpl) que devem ir para a raiz do repositório
@@ -113,12 +113,12 @@ locals {
 
   # Workflows (Serão carregados via templatefile/file())
   workflow_files_map = {
-    ".github/workflows/telegram_notify.yml" : "templates/telegram_notify.yml" ,
+    ".github/workflows/telegram_notify.yml" : "templates/telegram_notify.yml",
     ".github/workflows/slack_notify.yml" : "templates/slack_notify.yml"
   }
 
   # Combinação de todos os arquivos
-  config_files = merge(local.functional_templates, local.iac_files, local.template_yml_files, local.template_root_files,local.templates_in_iac_folder, local.workflow_files_map)
+  config_files = merge(local.functional_templates, local.iac_files, local.template_yml_files, local.template_root_files, local.templates_in_iac_folder, local.workflow_files_map)
 }
 
 # ==============================================================================
@@ -135,28 +135,28 @@ resource "github_repository" "main" {
   allow_squash_merge     = true
   allow_rebase_merge     = true
   delete_branch_on_merge = true
-  
-  auto_init              = true 
+
+  auto_init = true
 }
 
 
 # resource "github_repository" "cazia_project_repo"
 resource "github_repository" "cazia_project_repo" {
-  name                   = var.project_name
-  description            = "Repositório dedicado ao desenvolvimento de novas funcionalidades (Features) e planejamento de sprints do Cazia."
-  visibility             = "public" # ou "private", dependendo da necessidade
-  
-  # HABILITADO: Essencial para rastrear e planejar features
-  has_issues             = true
-  has_projects           = true 
-  
-  # CONTROLE DE MERGE: Padrão para desenvolvimento profissional
-  allow_merge_commit     = false   # Desativado: Força merges limpos (Squash ou Rebase)
-  allow_squash_merge     = true    # Ativado: Ótimo para merges de feature branches com histórico limpo
-  allow_rebase_merge     = true    # Ativado: Permite manter o histórico linear
-  delete_branch_on_merge = true    # Limpeza automática
+  name        = var.project_name
+  description = "Repositório dedicado ao desenvolvimento de novas funcionalidades (Features) e planejamento de sprints do Cazia."
+  visibility  = "public" # ou "private", dependendo da necessidade
 
-  auto_init              = true 
+  # HABILITADO: Essencial para rastrear e planejar features
+  has_issues   = true
+  has_projects = true
+
+  # CONTROLE DE MERGE: Padrão para desenvolvimento profissional
+  allow_merge_commit     = false # Desativado: Força merges limpos (Squash ou Rebase)
+  allow_squash_merge     = true  # Ativado: Ótimo para merges de feature branches com histórico limpo
+  allow_rebase_merge     = true  # Ativado: Permite manter o histórico linear
+  delete_branch_on_merge = true  # Limpeza automática
+
+  auto_init = true
 }
 
 # Garante a criação explícita da branch 'main' antes de tentar comitar arquivos
@@ -243,17 +243,17 @@ resource "github_repository_file" "all_files" {
 
   # Lógica de Conteúdo: Se o arquivo for .tpl, USA templatefile. Caso contrário (.tf, .yml), usa file().
   content = endswith(each.value, ".tpl") ? templatefile(
-    "${path.module}/${each.value}", 
+    "${path.module}/${each.value}",
     {
-      repo_name    = var.repo_name
-      org_name     = var.org_name
-      search_link  = "https://github.com/${var.org_name}/${var.repo_name}/issues"
+      repo_name   = var.repo_name
+      org_name    = var.org_name
+      search_link = "https://github.com/${var.org_name}/${var.repo_name}/issues"
     }
   ) : file("${path.module}/${each.value}")
 
   commit_message      = "feat: Adiciona arquivo de configuração: ${each.key}"
   overwrite_on_create = true
-  depends_on          = [github_branch.main] 
+  depends_on          = [github_branch.main]
 }
 # ==============================================================================
 # 4. Gerenciamento de Secrets do GitHub Actions
@@ -263,16 +263,16 @@ resource "github_actions_secret" "telegram_token_secret" {
   repository      = github_repository.main.name
   secret_name     = "TELEGRAM_TOKEN"
   plaintext_value = var.telegram_token
-  
-  depends_on      = [github_repository.main] 
+
+  depends_on = [github_repository.main]
 }
 
 resource "github_actions_secret" "telegram_chat_id_secret" {
   repository      = github_repository.main.name
   secret_name     = "TELEGRAM_CHAT_ID"
   plaintext_value = var.telegram_chat_id
-  
-  depends_on      = [github_repository.main]
+
+  depends_on = [github_repository.main]
 }
 
 
