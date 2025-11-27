@@ -1,0 +1,42 @@
+name: ⚙️ Task Técnica / Item de Ação
+description: Unidade de trabalho técnica, não-entregável, que compõe uma História de Usuário (Story).
+title: "[TASK]: [Story ID] - [Ação específica necessária]"
+labels: ["work: task"] # Rótulo inicial de hierarquia
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### 🔗 Item de Trabalho Menor
+        Esta Task deve ser parte de uma História de Usuário maior. Não atribua Story Points a Tasks.
+        ***
+
+  - type: input
+    id: parent_story
+    attributes:
+      label: 1. Link para a História de Usuário (Story Parent)
+      description: "Cole a URL completa ou o número da Issue da Story (work: story) que esta Task desbloqueia."
+      placeholder: "Ex: #123 ou https://github.com/ORG/REPO/issues/123"
+    validations:
+      required: true
+
+  - type: textarea
+    id: task_description
+    attributes:
+      label: "2. Descrição Detalhada da Tarefa"
+      description: Descreva o trabalho técnico a ser feito.
+      placeholder: "Ex: Implementar a interface de API para a rota de cadastro de imóveis (Endpoint GET /v1/imoveis)."
+    validations:
+      required: true
+      
+  - type: textarea
+    id: acceptance_check
+    attributes:
+      label: "3. Critério de Conclusão (Checklist)""
+      description: Liste os itens técnicos que precisam ser verificados para que esta Task seja considerada 'Done'.
+      placeholder: |
+        - [ ] Código da função 'saveItem' refatorado.
+        - [ ] 100% de cobertura de testes unitários para o módulo X.
+        - [ ] PR submetido à revisão.
+    validations:
+      required: false
