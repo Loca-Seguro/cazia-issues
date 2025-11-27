@@ -1,0 +1,56 @@
+name: 🧑‍💻 Solicitação de Ajuda/Ação Dev (Interna)
+description: Use para solicitar acesso, configuração de ambiente, extração de dados, ou apoio técnico não relacionado a um bug.
+title: "[HELP]: [Assunto] - Resumo do pedido"
+labels: ["help wanted", "to triage"] # Usamos 'help wanted' e 'to triage'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use este formulário apenas para pedidos de suporte interno da equipe de desenvolvimento ou administração.
+
+  - type: dropdown
+    id: request_type
+    attributes:
+      label: 1. Tipo de Ação Solicitada
+      description: Qual tipo de ajuda você precisa?
+      options:
+        - Pedido de Acesso (Ex: VPN, credenciais de sistema)
+        - Configuração de Ambiente (Ex: Máquina de desenvolvimento, dependências)
+        - Extração ou Alteração de Dados (Em base de dados)
+        - Dúvida Técnica ou Suporte a Ferramenta
+        - Outro (Explique abaixo)
+    validations:
+      required: true
+  
+  - type: textarea
+    id: detailed_request
+    attributes:
+      label: 2. Descrição Detalhada do Pedido
+      description: Descreva o que você precisa que seja feito e por que. Se for acesso, especifique o sistema/servidor.
+      placeholder: "Ex: Preciso de acesso R/W (Read/Write) ao banco de dados de staging para verificar uma query que falhou."
+    validations:
+      required: true
+      
+  - type: textarea
+    id: urgency
+    attributes:
+      label: 3. Urgência e Prazo Esperado
+      description: Qual o prazo ideal para que esta ação seja concluída?
+      placeholder: "Ex: Urgente (Bloqueia meu trabalho) - Preciso para amanhã de manhã."
+    validations:
+      required: true
+
+  - type: input
+    id: requester_contact
+    attributes:
+      label: 4. Quem está solicitando (Contato)
+      description: Seu nome ou login.
+      placeholder: "Ex: Nome e canal de contato (Slack/Telegram)"
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        *Este pedido será triado e atribuído à equipe de suporte ou desenvolvimento.*
