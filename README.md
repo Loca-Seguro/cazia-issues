@@ -1,5 +1,6 @@
 # 📄 README.md do Projeto Cazia (cazia-issues)
 
+
 ## 🚀 Visão Geral
 
 Este repositório contém o código-fonte principal do Projeto Cazia (CRM/Sistema Imobiliário).
